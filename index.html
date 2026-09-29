@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make 'N' Break 튜토리얼 & 인터랙티브 연습실</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            user-select: none;
+        }
+
+        .block-3d-wrapper {
+            position: relative;
+            filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.4));
+            transition: transform 0.15s ease-in-out;
+        }
+        .block-3d-wrapper:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Tab toggle */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Grid Cell Hover */
+        .grid-cell-hover {
+            transition: all 0.15s ease;
+        }
+        .grid-cell-hover:hover {
+            fill: rgba(245, 158, 11, 0.25);
+        }
+
+        /* Dice Roll Animation */
+        @keyframes diceShake {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(15deg) scale(1.1); }
+            75% { transform: rotate(-10deg) scale(1.05); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+        .dice-anim {
+            animation: diceShake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-slate-900 font-extrabold text-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-white">Make 'N' Break <span class="text-amber-400 text-sm font-semibold">LAB</span></h1>
+                    <p class="text-xs text-slate-400">1x3 입체 블록 & 아치 교량 실전 연습실</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1 sm:space-x-2 text-xs sm:text-sm font-semibold overflow-x-auto py-1">
+                <button onclick="switchTab('tutorial')" id="btn-tutorial" class="tab-btn px-3 py-2 rounded-lg bg-amber-500 text-slate-950 font-bold transition cursor-pointer">
+                    <i class="fa-solid fa-book-open mr-1.5"></i>튜토리얼
+                </button>
+                <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 transition cursor-pointer">
+                    <i class="fa-solid fa-gamepad mr-1.5"></i>실전 연습실
+                </button>
+                <button onclick="switchTab('timer')" id="btn-timer" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 transition cursor-pointer">
+                    <i class="fa-solid fa-stopwatch mr-1.5"></i>게임 도우미
+                </button>
+                <button onclick="switchTab('tips')" id="btn-tips" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 transition cursor-pointer">
+                    <i class="fa-solid fa-lightbulb mr-1.5"></i>전략 & 꿀팁
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto w-full px-4 py-6 flex-grow">
+
+        <!-- ==================== TAB 1: TUTORIAL (6 RULES) ==================== -->
+        <section id="tab-tutorial" class="tab-content active space-y-6">
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-xs font-bold border border-amber-500/30">RULES & GUIDE</span>
+                    <h2 class="text-2xl font-bold text-white">메이크앤브레이크 핵심 규칙 6가지</h2>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                    <strong>Make 'N' Break</strong>는 가로 1칸, 세로 3칸 규격의 입체 블록들을 이용해 다리(아치), 탑, 건축물을 정확하고 빠르게 완성하는 보드게임입니다!
+                </p>
+
+                <!-- 6 Step Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Rule 1 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">1</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-cubes text-amber-400 mr-1.5"></i>1x3 직육면체 블록</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            모든 블록은 가로 세로 비율이 1:3인 입체 원목 블록입니다. **세로(1x3)**로 세우거나 **가로(3x1)**로 눕혀 다양한 건축을 만듭니다.
+                        </p>
+                    </div>
+
+                    <!-- Rule 2 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">2</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-palette text-amber-400 mr-1.5"></i>회색(자유) 블록 규칙</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            카드에 **회색 블록**이 포함된 경우, 어떤 색상의 블록을 사용해도 무방합니다. 지정된 색상은 반드시 일치해야 합니다.
+                        </p>
+                    </div>
+
+                    <!-- Rule 3 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">3</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-archway text-amber-400 mr-1.5"></i>아치 및 교량 (공중 다리)</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            양쪽에 기둥을 세운 후, 가운데가 뚫린 상태에서 위에 가로 블록을 올려 **현실적인 다리(Bridge) 구조**를 만들 수 있습니다.
+                        </p>
+                    </div>
+
+                    <!-- Rule 4 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">4</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-dice text-amber-400 mr-1.5"></i>3눈금 전용 주사위</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            1~3까지 적힌 주사위를 굴립니다. **1 = 40초**, **2 = 50초**, **3 = 60초**의 제한 시간이 타이머에 설정됩니다.
+                        </p>
+                    </div>
+
+                    <!-- Rule 5 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">5</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i>시간 내 연속 도면 완성</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            타이머가 시작되면 카드를 보고 즉시 완성합니다. 성공하면 카드를 획득하고 시간 종료 전까지 다음 도면에 계속 도전합니다.
+                        </p>
+                    </div>
+
+                    <!-- Rule 6 -->
+                    <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 hover:border-amber-500/50 transition">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-slate-900 font-extrabold flex items-center justify-center mb-3">6</div>
+                        <h3 class="text-base font-bold text-white mb-2"><i class="fa-solid fa-trophy text-amber-400 mr-1.5"></i>라운드 종료 & 승리</h3>
+                        <p class="text-xs text-slate-400 leading-normal">
+                            제한 시간이 끝나면 획득한 카드점수(1~3점)를 합산합니다. 여러 라운드를 진행하여 가장 점수가 높은 사람이 승리합니다!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Quiz -->
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-question text-amber-400"></i>
+                    <span>규칙 점검 퀴즈</span>
+                </h3>
+                <div class="space-y-4 text-sm">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                        <p class="font-semibold text-slate-200 mb-2">Q. 도면 카드의 회색 블록은 어떤 색으로 쌓아야 할까요?</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <button onclick="checkQuiz(this, true)" class="quiz-opt p-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-left border border-slate-700 transition cursor-pointer">A. 색상에 상관없이 아무 블록이나 마음대로 사용할 수 있다.</button>
+                            <button onclick="checkQuiz(this, false)" class="quiz-opt p-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-left border border-slate-700 transition cursor-pointer">B. 무조건 회색으로 칠해진 특수 블록만 사용해야 한다.</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: INTERACTIVE PRACTICE ==================== -->
+        <section id="tab-practice" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Left Column: Mission Card Display -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 shadow-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-1 bg-amber-500/20 text-amber-400 rounded-md text-xs font-bold border border-amber-500/30">
+                                    TARGET CARD #<span id="card-id">1</span>
+                                </span>
+                                <div id="card-difficulty" class="flex items-center space-x-1 text-amber-400 text-xs font-bold">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span>난이도: 3점</span>
+                                </div>
+                            </div>
+                            <h3 class="text-base font-bold text-white mb-1" id="card-title">미션 도면 카드</h3>
+                            <p class="text-xs text-slate-400 mb-4">우측 건축 공간에서 가로/세로 방향을 선택한 후 클릭하여 완성하세요.</p>
+                        </div>
+
+                        <!-- Card Blueprint Container -->
+                        <div class="bg-slate-950 p-4 rounded-xl border-2 border-slate-700 flex flex-col items-center justify-center min-h-[290px] relative overflow-hidden shadow-inner">
+                            <div id="card-blueprint-canvas" class="relative w-[280px] h-[260px] flex items-end justify-center bg-amber-100/5 rounded-lg border border-slate-800">
+                                <!-- Target 3D Blocks rendered SVG here -->
+                            </div>
+                        </div>
+
+                        <!-- Round Controls -->
+                        <div class="mt-4 flex items-center justify-between gap-2">
+                            <button onclick="generateRandomCard()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer">
+                                <i class="fa-solid fa-shuffle"></i>
+                                <span>다른 카드 뽑기</span>
+                            </button>
+                            <span class="text-xs text-slate-400">누적 점수: <strong id="score-counter" class="text-amber-400 text-base">0</strong> 점</span>
+                        </div>
+                    </div>
+
+                    <!-- Practice Timer & Dice Helper -->
+                    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700 shadow-xl space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block">도전 타이머</span>
+                                <span id="dice-info" class="text-[11px] text-amber-400 font-semibold">주사위 2눈금 (50초)</span>
+                            </div>
+                            <span id="practice-timer" class="text-2xl font-black text-amber-400 font-mono">00:50</span>
+                        </div>
+
+                        <!-- Dice Roll Bar -->
+                        <div class="flex items-center space-x-2 bg-slate-900 p-2 rounded-xl border border-slate-700">
+                            <button onclick="rollDice('practice')" id="practice-dice-btn" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg font-black text-sm flex items-center space-x-1.5 transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+                                <i class="fa-solid fa-dice-three text-lg"></i>
+                                <span>주사위 (1~3)</span>
+                            </button>
+                            <div class="text-xs text-slate-300 font-medium pl-1">
+                                눈금: <strong id="practice-dice-val" class="text-amber-400 text-sm">2</strong> (<span id="practice-time-val">50</span>초)
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
+                            <div id="timer-bar" class="bg-amber-500 h-full w-full transition-all duration-1000"></div>
+                        </div>
+                        <div class="flex space-x-2 pt-1">
+                            <button onclick="startPracticeTimer()" id="btn-start-practice" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs transition flex items-center justify-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-play"></i>
+                                <span>타이머 시작</span>
+                            </button>
+                            <button onclick="resetPracticeTimer()" class="px-3 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-bold text-xs transition cursor-pointer">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive 3D Block Builder Canvas -->
+                <div class="lg:col-span-7 bg-slate-800 rounded-2xl p-5 border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                                <i class="fa-solid fa-layer-group text-amber-400"></i>
+                                <span>나만의 건축 공간 (아치/교량 중력 physics)</span>
+                            </h3>
+                            <button onclick="clearBuilderGrid()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>전체 비우기</span>
+                            </button>
+                        </div>
+
+                        <!-- Block Settings: Color & Orientation Toggle -->
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 mb-4 space-y-3">
+                            <!-- Orientation Selector -->
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1.5">1. 블록 방향 선택 (1x3 규격)</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="setOrientation('V')" id="btn-orient-v" class="py-2 px-3 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs border border-amber-400 flex items-center justify-center space-x-2 cursor-pointer transition">
+                                        <div class="w-2.5 h-6 bg-slate-900 rounded-sm"></div>
+                                        <span>세로 세우기 (1x3)</span>
+                                    </button>
+                                    <button onclick="setOrientation('H')" id="btn-orient-h" class="py-2 px-3 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs border border-slate-700 flex items-center justify-center space-x-2 cursor-pointer transition">
+                                        <div class="w-6 h-2.5 bg-slate-400 rounded-sm"></div>
+                                        <span>가로 눕히기 (3x1)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Color Palette Selector -->
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1.5">2. 색상 선택</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="selectPaletteColor('red')" class="palette-btn px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold ring-2 ring-white cursor-pointer" data-color="red">빨강</button>
+                                    <button onclick="selectPaletteColor('blue')" class="palette-btn px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="blue">파랑</button>
+                                    <button onclick="selectPaletteColor('green')" class="palette-btn px-3 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="green">초록</button>
+                                    <button onclick="selectPaletteColor('yellow')" class="palette-btn px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="yellow">노랑</button>
+                                    <button onclick="selectPaletteColor('navy')" class="palette-btn px-3 py-1.5 rounded-lg bg-indigo-900 text-white text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="navy">남색</button>
+                                    <button onclick="selectPaletteColor('white')" class="palette-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-900 text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="white">흰색</button>
+                                    <button onclick="selectPaletteColor('grey')" class="palette-btn px-3 py-1.5 rounded-lg bg-slate-500 text-white text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="grey">회색(자유)</button>
+                                    <button onclick="selectPaletteColor('erase')" class="palette-btn px-3 py-1.5 rounded-lg bg-slate-800 text-rose-400 border border-slate-700 text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer" data-color="erase">
+                                        <i class="fa-solid fa-eraser mr-1"></i>지우개
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Stacking Grid Canvas (7 cols x 8 rows) -->
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-slate-400">3. 원하는 위치를 클릭하면 착지합니다. (지우개 선택 시 위쪽 블록 삭제)</span>
+                            <span class="text-[11px] text-amber-400 font-semibold"><i class="fa-solid fa-archway mr-1"></i>중력 physics 지원</span>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-700 flex justify-center items-center min-h-[310px] relative shadow-inner overflow-hidden">
+                            <!-- Visual Base Floor Line -->
+                            <div class="absolute bottom-4 left-6 right-6 h-1.5 bg-amber-500/40 rounded-full"></div>
+
+                            <!-- Interactive User Canvas Area -->
+                            <div id="user-builder-canvas" class="relative w-[280px] h-[288px] bg-slate-900/40 rounded-lg border border-slate-800 flex items-end justify-center">
+                                <!-- Dynamic Grid Overlay & SVG Blocks Rendered Here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-5 space-y-2">
+                        <button onclick="verifyUserBuild()" id="btn-verify-build" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-base rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>완성! 정답 확인하기</span>
+                        </button>
+                        <div id="verify-feedback" class="text-center text-xs font-bold py-1 min-h-[24px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: DIGITAL GAME HELPER ==================== -->
+        <section id="tab-timer" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Real Board Game Digital Timer -->
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fa-solid fa-stopwatch text-amber-400 text-xl"></i>
+                            <h2 class="text-xl font-bold text-white">실전 오프라인 주사위 & 타이머</h2>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-5">1~3 눈금 주사위를 굴려 40초, 50초, 60초 타이머를 가동해보세요.</p>
+
+                        <!-- Big Digital Display -->
+                        <div class="bg-slate-950 p-6 rounded-2xl border-2 border-slate-700 text-center mb-5 shadow-inner">
+                            <span id="helper-timer-display" class="text-6xl font-black text-amber-400 font-mono tracking-wider block">00:50</span>
+                            <span id="helper-status" class="block text-xs text-slate-500 mt-2 font-bold">주사위 눈금 2 (50초 대기 중)</span>
+                        </div>
+
+                        <!-- Dice Roll & Quick Presets -->
+                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <button onclick="rollDice('helper')" id="helper-dice-btn" class="w-full sm:w-auto px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg font-black text-sm flex items-center justify-center space-x-2 transition shadow-md cursor-pointer">
+                                <i class="fa-solid fa-dice text-lg"></i>
+                                <span>주사위 굴리기 (1~3)</span>
+                            </button>
+
+                            <div class="grid grid-cols-3 gap-1.5 w-full sm:w-auto">
+                                <button onclick="setHelperTime(1, 40)" class="py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-[11px] font-bold rounded-md border border-slate-700 text-slate-300 cursor-pointer">1 (40초)</button>
+                                <button onclick="setHelperTime(2, 50)" class="py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-[11px] font-bold rounded-md border border-slate-700 text-amber-400 cursor-pointer">2 (50초)</button>
+                                <button onclick="setHelperTime(3, 60)" class="py-1.5 px-2 bg-slate-800 hover:bg-slate-700 text-[11px] font-bold rounded-md border border-slate-700 text-slate-300 cursor-pointer">3 (60초)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timer Controls -->
+                    <div class="flex space-x-3">
+                        <button onclick="toggleHelperTimer()" id="btn-helper-toggle" class="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition cursor-pointer">
+                            타이머 시작
+                        </button>
+                        <button onclick="resetHelperTimer()" class="px-5 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold text-sm rounded-xl transition cursor-pointer">
+                            리셋
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Player Scoreboard -->
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
+                                <h2 class="text-xl font-bold text-white">플레이어 점수판</h2>
+                            </div>
+                            <button onclick="addPlayer()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-amber-400 text-xs font-bold rounded-lg transition flex items-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>인원 추가</span>
+                            </button>
+                        </div>
+
+                        <!-- Player List -->
+                        <div id="player-list" class="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                            <!-- Dynamic player rows -->
+                        </div>
+                    </div>
+
+                    <button onclick="resetAllScores()" class="mt-4 w-full py-2 bg-slate-900 hover:bg-slate-900/80 text-slate-400 text-xs font-semibold rounded-lg border border-slate-700 transition cursor-pointer">
+                        점수 초기화
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: TIPS & STRATEGIES ==================== -->
+        <section id="tab-tips" class="tab-content space-y-6">
+            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl">
+                <div class="flex items-center space-x-3 mb-6">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-2xl"></i>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">고득점 승리를 위한 마스터 꿀팁</h2>
+                        <p class="text-xs text-slate-400">1x3 블록 구조물 빠르게 조립하는 방법</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700">
+                        <h3 class="text-amber-400 font-bold text-sm mb-2 flex items-center">
+                            <i class="fa-solid fa-archway mr-2"></i>1. 아치(다리)의 기둥 간격 파악하기
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            다리 모양 카드가 나오면, 가로 블록의 양끝을 받치는 **두 기둥 사이의 칸수(보통 1칸 빈공간)**를 정확히 집어 바닥에 먼저 놓으세요.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700">
+                        <h3 class="text-amber-400 font-bold text-sm mb-2 flex items-center">
+                            <i class="fa-solid fa-arrows-up-down-left-right mr-2"></i>2. 세우기 vs 눕히기 즉시 파악
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            블록을 세로로 세울 때와 가로로 눕힐 때의 지점 배치를 한눈에 구분해야 합니다. 세로 블록은 높이가 3배 높다는 점을 명심하세요.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Round Completion Result Modal -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border-2 border-amber-500/50 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl relative">
+            <div class="w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto text-3xl mb-3 border border-amber-500/40">
+                <i class="fa-solid fa-flag-checkered"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-1">시간 종료!</h3>
+            <p class="text-xs text-slate-400 mb-5">이번 라운드 도전 결과입니다.</p>
+
+            <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 space-y-3 mb-6">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold">성공한 도면 개수:</span>
+                    <span id="modal-cards-count" class="text-white font-extrabold text-sm">0 개</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold">이번 라운드 획득 점수:</span>
+                    <span id="modal-round-score" class="text-amber-400 font-extrabold text-base">+0 점</span>
+                </div>
+                <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-xs">
+                    <span class="text-slate-300 font-bold">총 누적 점수:</span>
+                    <span id="modal-total-score" class="text-emerald-400 font-black text-lg">0 점</span>
+                </div>
+            </div>
+
+            <button onclick="closeResultModal()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl shadow-lg transition cursor-pointer">
+                확인 (다음 라운드 준비)
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        <p>Make 'N' Break Board Game Tutorial & Interactive Practice Simulator</p>
+    </footer>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC & 3D RENDERER ==================== -->
+    <script>
+        let currentTab = 'tutorial';
+        let selectedColor = 'red';
+        let currentOrientation = 'V'; // 'V' = Vertical 1x3, 'H' = Horizontal 3x1
+        let userScore = 0;
+
+        // Practice Round States
+        let isPracticeRunning = false;
+        let practiceTimerInterval = null;
+        let practiceTimeLeft = 50;
+        let practiceMaxTime = 50;
+        let practiceDiceValue = 2;
+        let roundScore = 0;
+        let roundCompletedCards = 0;
+
+        // Helper Timer States
+        let helperTimerInterval = null;
+        let helperTimeLeft = 50;
+        let helperMaxTime = 50;
+        let helperDiceValue = 2;
+        let helperRunning = false;
+
+        let players = [
+            { name: '플레이어 1', score: 0 },
+            { name: '플레이어 2', score: 0 }
+        ];
+
+        // Grid Dimensions for Builder Canvas: 7 columns (0..6) x 8 rows (0..7)
+        const GRID_COLS = 7;
+        const GRID_ROWS = 8;
+
+        // User placed blocks array: [{id, color, orient, col, row}]
+        let userBlocks = [];
+
+        // Realistic Color Palette Definitions matching 3D Wooden Block Style
+        const BLOCK_COLORS = {
+            red: { front: '#e53935', top: '#ff6f60', side: '#ab000d', border: '#8e0000', label: '빨강' },
+            blue: { front: '#1e88e5', top: '#6ab7ff', side: '#005b9f', border: '#003c8f', label: '파랑' },
+            green: { front: '#43a047', top: '#76d275', side: '#00701a', border: '#004300', label: '초록' },
+            yellow: { front: '#fbc02d', top: '#fff263', side: '#c49000', border: '#946200', label: '노랑' },
+            navy: { front: '#1a237e', top: '#534bae', side: '#000051', border: '#000028', label: '남색' },
+            white: { front: '#e2e8f0', top: '#ffffff', side: '#cbd5e1', border: '#94a3b8', label: '흰색' },
+            grey: { front: '#64748b', top: '#94a3b8', side: '#475569', border: '#334155', label: '회색' }
+        };
+
+        // Mission Cards Preset (100% Physically Build-able & Non-overlapping)
+        const challengeCards = [
+            {
+                id: 1,
+                title: "사진 속 아치 다리와 탑 (Photo Arch & Tower)",
+                points: 3,
+                blocks: [
+                    { color: 'red', orient: 'H', col: 2, row: 0 },   // Bottom Red Horizontal
+                    { color: 'blue', orient: 'V', col: 2, row: 1 },  // Left Blue Pillar
+                    { color: 'navy', orient: 'V', col: 4, row: 1 },  // Right Navy Pillar
+                    { color: 'white', orient: 'H', col: 2, row: 4 }, // White Bridge Horizontal
+                    { color: 'green', orient: 'V', col: 3, row: 5 }  // Top Green Vertical Tower
+                ]
+            },
+            {
+                id: 2,
+                title: "기본 2단 아치 교량 (2-Tier Arch Bridge)",
+                points: 2,
+                blocks: [
+                    { color: 'yellow', orient: 'V', col: 2, row: 0 },
+                    { color: 'green', orient: 'V', col: 4, row: 0 },
+                    { color: 'red', orient: 'H', col: 2, row: 3 },
+                    { color: 'blue', orient: 'H', col: 2, row: 4 }
+                ]
+            },
+            {
+                id: 3,
+                title: "3층 마천루 타워 (3-Tier Skyscraper)",
+                points: 3,
+                blocks: [
+                    { color: 'navy', orient: 'H', col: 2, row: 0 },
+                    { color: 'red', orient: 'V', col: 2, row: 1 },
+                    { color: 'yellow', orient: 'V', col: 4, row: 1 },
+                    { color: 'green', orient: 'H', col: 2, row: 4 },
+                    { color: 'white', orient: 'V', col: 3, row: 5 }
+                ]
+            },
+            {
+                id: 4,
+                title: "이중 아치 성벽 (Double Arch Castle)",
+                points: 3,
+                blocks: [
+                    { color: 'red', orient: 'V', col: 0, row: 0 },
+                    { color: 'navy', orient: 'V', col: 2, row: 0 },
+                    { color: 'blue', orient: 'V', col: 4, row: 0 },
+                    { color: 'white', orient: 'V', col: 6, row: 0 },
+                    { color: 'yellow', orient: 'H', col: 0, row: 3 },
+                    { color: 'green', orient: 'H', col: 4, row: 3 },
+                    { color: 'grey', orient: 'H', col: 2, row: 4 }
+                ]
+            },
+            {
+                id: 5,
+                title: "대형 관문 타워 (Grand Gate Tower)",
+                points: 3,
+                blocks: [
+                    { color: 'red', orient: 'V', col: 2, row: 0 },
+                    { color: 'blue', orient: 'V', col: 4, row: 0 },
+                    { color: 'yellow', orient: 'H', col: 2, row: 3 },
+                    { color: 'green', orient: 'V', col: 2, row: 4 },
+                    { color: 'white', orient: 'V', col: 4, row: 4 },
+                    { color: 'navy', orient: 'H', col: 2, row: 7 }
+                ]
+            },
+            {
+                id: 6,
+                title: "계단형 아치 (Stepped Arch)",
+                points: 2,
+                blocks: [
+                    { color: 'green', orient: 'V', col: 1, row: 0 },
+                    { color: 'yellow', orient: 'V', col: 3, row: 0 },
+                    { color: 'navy', orient: 'V', col: 5, row: 0 },
+                    { color: 'red', orient: 'H', col: 1, row: 3 },
+                    { color: 'blue', orient: 'H', col: 3, row: 4 },
+                    { color: 'white', orient: 'H', col: 1, row: 5 }
+                ]
+            },
+            {
+                id: 7,
+                title: "쌍둥이 타워 다리 (Twin Tower Bridge)",
+                points: 2,
+                blocks: [
+                    { color: 'red', orient: 'V', col: 1, row: 0 },
+                    { color: 'blue', orient: 'V', col: 5, row: 0 },
+                    { color: 'yellow', orient: 'H', col: 1, row: 3 },
+                    { color: 'green', orient: 'H', col: 3, row: 4 },
+                    { color: 'white', orient: 'V', col: 3, row: 5 }
+                ]
+            },
+            {
+                id: 8,
+                title: "기초 아치 다리 (Basic Arch Bridge)",
+                points: 1,
+                blocks: [
+                    { color: 'red', orient: 'V', col: 2, row: 0 },
+                    { color: 'blue', orient: 'V', col: 4, row: 0 },
+                    { color: 'yellow', orient: 'H', col: 2, row: 3 }
+                ]
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        // Audio Effects Engine
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        // Web Audio API 효과음 생성 함수
+        function playSound(type) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new AudioCtx();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'drop') {
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'success') {
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.1);
+                    osc.frequency.setValueAtTime(783.99, now + 0.2);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.setValueAtTime(140, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'dice') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.setValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'beep') {
+                    osc.frequency.setValueAtTime(880, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch(e) {
+                // 브라우저 차단 및 음향 오류 발생 시에도 스크립트 실행이 중단되지 않도록 방어
+            }
+        }
+
+        // Helper to sort blocks for correct 3D z-index layering (bottom-to-top, left-to-right)
+        function getSortedBlocks(blocks) {
+            return [...blocks].sort((a, b) => {
+                if (a.row !== b.row) {
+                    return a.row - b.row; // Lower rows rendered first
+                }
+                return a.col - b.col; // Left columns rendered first
+            });
+        }
+
+        // Generates SVG representation of a 1x3 cuboid (Vertical or Horizontal)
+        function renderBlockSVG(block, unitSize = 36) {
+            const { color, orient, col, row } = block;
+            const cInfo = BLOCK_COLORS[color] || BLOCK_COLORS.red;
+
+            const wUnits = orient === 'H' ? 3 : 1;
+            const hUnits = orient === 'V' ? 3 : 1;
+
+            const width = wUnits * unitSize;
+            const height = hUnits * unitSize;
+
+            const depth = 10; // 3D bevel depth
+
+            // Calculate SVG positions (origin bottom-left in grid coordinates)
+            const x = col * unitSize;
+            const y = (GRID_ROWS - row - hUnits) * unitSize;
+
+            const svg = `
+                <g class="block-3d-group pointer-events-none" transform="translate(${x}, ${y})">
+                    <!-- Top Face -->
+                    <polygon points="0,0 ${depth},-${depth} ${width + depth},-${depth} ${width},0" 
+                             fill="${cInfo.top}" stroke="${cInfo.border}" stroke-width="1.5" />
+                    <!-- Right Side Face -->
+                    <polygon points="${width},0 ${width + depth},-${depth} ${width + depth},${height - depth} ${width},${height}" 
+                             fill="${cInfo.side}" stroke="${cInfo.border}" stroke-width="1.5" />
+                    <!-- Front Face -->
+                    <rect x="0" y="0" width="${width}" height="${height}" 
+                          fill="${cInfo.front}" stroke="${cInfo.border}" stroke-width="1.5" />
+                    ${color === 'grey' ? `<text x="${width/2}" y="${height/2 + 4}" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">자유</text>` : ''}
+                </g>
+            `;
+            return svg;
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            currentTab = tabId;
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-amber-500', 'text-slate-950', 'font-bold');
+                el.classList.add('text-slate-300');
+            });
+
+            const targetTab = document.getElementById(`tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
+
+            const targetBtn = document.getElementById(`btn-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.remove('text-slate-300');
+                targetBtn.classList.add('bg-amber-500', 'text-slate-950', 'font-bold');
+            }
+        }
+
+        function checkQuiz(btn, isCorrect) {
+            playSound('click');
+            const opts = btn.parentElement.querySelectorAll('.quiz-opt');
+            opts.forEach(opt => {
+                opt.classList.remove('bg-emerald-600', 'bg-rose-600', 'text-white', 'bg-slate-800');
+                opt.classList.add('bg-slate-800');
+            });
+
+            if (isCorrect) {
+                playSound('success');
+                btn.classList.remove('bg-slate-800');
+                btn.classList.add('bg-emerald-600', 'text-white');
+            } else {
+                playSound('error');
+                btn.classList.remove('bg-slate-800');
+                btn.classList.add('bg-rose-600', 'text-white');
+            }
+        }
+
+        function setOrientation(orient) {
+            playSound('click');
+            currentOrientation = orient;
+            const btnV = document.getElementById('btn-orient-v');
+            const btnH = document.getElementById('btn-orient-h');
+
+            if (orient === 'V') {
+                btnV.className = 'py-2 px-3 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs border border-amber-400 flex items-center justify-center space-x-2 cursor-pointer transition';
+                btnH.className = 'py-2 px-3 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs border border-slate-700 flex items-center justify-center space-x-2 cursor-pointer transition';
+            } else {
+                btnH.className = 'py-2 px-3 rounded-lg bg-amber-500 text-slate-950 font-bold text-xs border border-amber-400 flex items-center justify-center space-x-2 cursor-pointer transition';
+                btnV.className = 'py-2 px-3 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 font-bold text-xs border border-slate-700 flex items-center justify-center space-x-2 cursor-pointer transition';
+            }
+        }
+
+        function selectPaletteColor(color) {
+            playSound('click');
+            selectedColor = color;
+            document.querySelectorAll('.palette-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-white');
+                btn.classList.add('opacity-70');
+            });
+
+            const activeBtn = document.querySelector(`.palette-btn[data-color="${color}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('ring-2', 'ring-white');
+                activeBtn.classList.remove('opacity-70');
+            }
+        }
+
+        function renderTargetCard() {
+            const card = challengeCards[currentCardIndex];
+            document.getElementById('card-id').innerText = card.id;
+            document.getElementById('card-title').innerText = card.title;
+            document.getElementById('card-difficulty').innerHTML = `
+                <i class="fa-solid fa-star"></i>
+                <span>난이도: ${card.points}점</span>
+            `;
+
+            const container = document.getElementById('card-blueprint-canvas');
+            const svgWidth = 7 * 36;
+            const svgHeight = 8 * 36;
+
+            const sortedBlocks = getSortedBlocks(card.blocks);
+            let blocksSvg = sortedBlocks.map(b => renderBlockSVG(b, 36)).join('');
+
+            container.innerHTML = `
+                <svg width="${svgWidth}" height="${svgHeight}" viewBox="-5 -15 ${svgWidth + 20} ${svgHeight + 20}" class="overflow-visible">
+                    ${blocksSvg}
+                </svg>
+            `;
+        }
+
+        function generateRandomCard() {
+            playSound('click');
+            let newIndex;
+            if (challengeCards.length > 1) {
+                do {
+                    newIndex = Math.floor(Math.random() * challengeCards.length);
+                } while (newIndex === currentCardIndex);
+            } else {
+                newIndex = 0;
+            }
+            currentCardIndex = newIndex;
+            renderTargetCard();
+            document.getElementById('verify-feedback').innerHTML = '';
+        }
+
+        // Checks occupancy grid based on userBlocks array
+        function getOccupiedGrid(blocks) {
+            const grid = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(false));
+            blocks.forEach(b => {
+                const w = b.orient === 'H' ? 3 : 1;
+                const h = b.orient === 'V' ? 3 : 1;
+                for (let r = b.row; r < b.row + h; r++) {
+                    for (let c = b.col; c < b.col + w; c++) {
+                        if (r < GRID_ROWS && c < GRID_COLS) {
+                            grid[r][c] = true;
+                        }
+                    }
+                }
+            });
+            return grid;
+        }
+
+        // Calculates gravity drop row for a new block placed at column 'col'
+        function calculateDropRow(orient, col) {
+            const w = orient === 'H' ? 3 : 1;
+            const h = orient === 'V' ? 3 : 1;
+
+            if (col < 0 || col + w > GRID_COLS) return -1; // Out of bounds
+
+            const occ = getOccupiedGrid(userBlocks);
+
+            // Find highest occupied row under the span of the new block [col .. col + w - 1]
+            let maxOccupiedRow = -1;
+            for (let c = col; c < col + w; c++) {
+                for (let r = GRID_ROWS - 1; r >= 0; r--) {
+                    if (occ[r][c]) {
+                        if (r > maxOccupiedRow) {
+                            maxOccupiedRow = r;
+                        }
+                        break; // found highest in this column
+                    }
+                }
+            }
+
+            const targetRow = maxOccupiedRow + 1;
+
+            // Check if block fits within grid height
+            if (targetRow + h > GRID_ROWS) return -1;
+
+            return targetRow;
+        }
+
+        function handleCanvasClick(col) {
+            // Eraser Mode: Remove the topmost block occupying column `col`
+            if (selectedColor === 'erase') {
+                let targetIndex = -1;
+                let maxRow = -1;
+
+                userBlocks.forEach((b, idx) => {
+                    const w = b.orient === 'H' ? 3 : 1;
+                    if (col >= b.col && col < b.col + w) {
+                        if (b.row > maxRow) {
+                            maxRow = b.row;
+                            targetIndex = idx;
+                        }
+                    }
+                });
+
+                if (targetIndex !== -1) {
+                    playSound('click');
+                    userBlocks.splice(targetIndex, 1);
+                    renderUserCanvas();
+                } else {
+                    showToast("삭제할 블록이 없습니다.");
+                }
+                return;
+            }
+
+            // Normal Placement Mode
+            let targetCol = col;
+            if (currentOrientation === 'H') {
+                if (targetCol > GRID_COLS - 3) targetCol = GRID_COLS - 3;
+            }
+
+            const dropRow = calculateDropRow(currentOrientation, targetCol);
+
+            if (dropRow !== -1) {
+                playSound('drop');
+                userBlocks.push({
+                    id: Date.now(),
+                    color: selectedColor,
+                    orient: currentOrientation,
+                    col: targetCol,
+                    row: dropRow
+                });
+                renderUserCanvas();
+            } else {
+                showToast("이 위치에는 블록을 안정적으로 놓을 수 없습니다!");
+            }
+        }
+
+        function renderUserCanvas() {
+            const container = document.getElementById('user-builder-canvas');
+            const unitSize = 36;
+            const svgWidth = GRID_COLS * unitSize;
+            const svgHeight = GRID_ROWS * unitSize;
+
+            // Render background column click targets
+            let colButtons = '';
+            for (let c = 0; c < GRID_COLS; c++) {
+                colButtons += `
+                    <rect x="${c * unitSize}" y="0" width="${unitSize}" height="${svgHeight}" 
+                          fill="transparent" class="grid-cell-hover cursor-pointer" onclick="handleCanvasClick(${c})" />
+                    <line x1="${c * unitSize}" y1="0" x2="${c * unitSize}" y2="${svgHeight}" stroke="rgba(255,255,255,0.05)" />
+                `;
+            }
+
+            const sortedBlocks = getSortedBlocks(userBlocks);
+            let blocksSvg = sortedBlocks.map(b => renderBlockSVG(b, unitSize)).join('');
+
+            container.innerHTML = `
+                <svg width="${svgWidth}" height="${svgHeight}" viewBox="-5 -15 ${svgWidth + 20} ${svgHeight + 20}" class="overflow-visible">
+                    ${colButtons}
+                    ${blocksSvg}
+                </svg>
+            `;
+        }
+
+        function clearBuilderGrid() {
+            playSound('click');
+            userBlocks = [];
+            renderUserCanvas();
+            document.getElementById('verify-feedback').innerHTML = '';
+        }
+
+        function verifyUserBuild() {
+            if (!isPracticeRunning) {
+                playSound('error');
+                showToast("⚠️ 타이머를 먼저 시작해야 정답 확인이 가능합니다!");
+                return;
+            }
+
+            const card = challengeCards[currentCardIndex];
+            const targetBlocks = card.blocks;
+
+            if (userBlocks.length !== targetBlocks.length) {
+                showVerifyResult(false);
+                return;
+            }
+
+            let allMatch = true;
+            targetBlocks.forEach(tb => {
+                const match = userBlocks.find(ub => 
+                    ub.col === tb.col && 
+                    ub.row === tb.row && 
+                    ub.orient === tb.orient && 
+                    (tb.color === 'grey' || ub.color === tb.color)
+                );
+                if (!match) allMatch = false;
+            });
+
+            showVerifyResult(allMatch, card.points);
+        }
+
+        function showVerifyResult(isMatch, points = 0) {
+            const feedback = document.getElementById('verify-feedback');
+            if (isMatch) {
+                playSound('success');
+                roundScore += points;
+                roundCompletedCards++;
+                userScore += points;
+                document.getElementById('score-counter').innerText = userScore;
+
+                // Clear canvas and load next card automatically
+                clearBuilderGrid();
+                generateRandomCard();
+
+                feedback.innerHTML = `<span class="text-emerald-400 font-extrabold flex items-center justify-center space-x-1 text-sm">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>정답입니다! (+${points}점) 다음 카드로 계속 도전하세요!</span>
+                </span>`;
+            } else {
+                playSound('error');
+                feedback.innerHTML = `<span class="text-rose-400 font-extrabold flex items-center justify-center space-x-1 text-sm">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>도면의 위치, 방향 또는 색상이 일치하지 않습니다. 다시 확인해보세요!</span>
+                </span>`;
+            }
+        }
+
+        function showToast(msg) {
+            const feedback = document.getElementById('verify-feedback');
+            if (feedback) {
+                feedback.innerHTML = `<span class="text-amber-400 font-bold">${msg}</span>`;
+                setTimeout(() => { feedback.innerHTML = ''; }, 2500);
+            }
+        }
+
+        function rollDice(target) {
+            if (target === 'practice' && isPracticeRunning) {
+                showToast("타이머가 진행 중일 때는 주사위를 굴릴 수 없습니다.");
+                return;
+            }
+
+            playSound('dice');
+            const val = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+            const timeMap = { 1: 40, 2: 50, 3: 60 };
+            const time = timeMap[val];
+
+            if (target === 'practice') {
+                const btn = document.getElementById('practice-dice-btn');
+                if (btn) {
+                    btn.classList.add('dice-anim');
+                    setTimeout(() => btn.classList.remove('dice-anim'), 400);
+                }
+
+                practiceDiceValue = val;
+                practiceMaxTime = time;
+                practiceTimeLeft = time;
+                document.getElementById('practice-dice-val').innerText = val;
+                document.getElementById('practice-time-val').innerText = time;
+                document.getElementById('dice-info').innerText = `주사위 ${val}눈금 (${time}초)`;
+                updatePracticeTimerDisplay();
+            } else if (target === 'helper') {
+                const btn = document.getElementById('helper-dice-btn');
+                if (btn) {
+                    btn.classList.add('dice-anim');
+                    setTimeout(() => btn.classList.remove('dice-anim'), 400);
+                }
+                setHelperTime(val, time);
+            }
+        }
+
+        function startPracticeTimer() {
+            playSound('click');
+            clearInterval(practiceTimerInterval);
+
+            isPracticeRunning = true;
+            roundScore = 0;
+            roundCompletedCards = 0;
+            practiceTimeLeft = practiceMaxTime;
+            
+            // Disable dice button during timer
+            document.getElementById('practice-dice-btn').disabled = true;
+
+            clearBuilderGrid();
+            updatePracticeTimerDisplay();
+
+            practiceTimerInterval = setInterval(() => {
+                practiceTimeLeft--;
+                updatePracticeTimerDisplay();
+                if (practiceTimeLeft <= 5 && practiceTimeLeft > 0) playSound('beep');
+                if (practiceTimeLeft <= 0) {
+                    clearInterval(practiceTimerInterval);
+                    isPracticeRunning = false;
+                    document.getElementById('practice-dice-btn').disabled = false;
+                    playSound('error');
+                    
+                    // Show Round Result Summary Modal
+                    showResultModal();
+                }
+            }, 1000);
+        }
+
+        function resetPracticeTimer() {
+            playSound('click');
+            clearInterval(practiceTimerInterval);
+            isPracticeRunning = false;
+            document.getElementById('practice-dice-btn').disabled = false;
+            practiceTimeLeft = practiceMaxTime;
+            updatePracticeTimerDisplay();
+            clearBuilderGrid();
+        }
+
+        function updatePracticeTimerDisplay() {
+            const sec = practiceTimeLeft < 10 ? `0${practiceTimeLeft}` : practiceTimeLeft;
+            document.getElementById('practice-timer').innerText = `00:${sec}`;
+            const pct = (practiceTimeLeft / practiceMaxTime) * 100;
+            document.getElementById('timer-bar').style.width = `${pct}%`;
+        }
+
+        function showResultModal() {
+            document.getElementById('modal-cards-count').innerText = `${roundCompletedCards} 개`;
+            document.getElementById('modal-round-score').innerText = `+${roundScore} 점`;
+            document.getElementById('modal-total-score').innerText = `${userScore} 점`;
+            document.getElementById('result-modal').classList.remove('hidden');
+        }
+
+        function closeResultModal() {
+            playSound('click');
+            document.getElementById('result-modal').classList.add('hidden');
+        }
+
+        function setHelperTime(diceVal, seconds) {
+            playSound('click');
+            if (helperRunning) toggleHelperTimer();
+            helperDiceValue = diceVal;
+            helperMaxTime = seconds;
+            helperTimeLeft = seconds;
+            updateHelperDisplay();
+            document.getElementById('helper-status').innerText = `주사위 눈금 ${diceVal} (${seconds}초 대기 중)`;
+        }
+
+        function toggleHelperTimer() {
+            playSound('click');
+            const btn = document.getElementById('btn-helper-toggle');
+            const status = document.getElementById('helper-status');
+
+            if (helperRunning) {
+                clearInterval(helperTimerInterval);
+                helperRunning = false;
+                btn.innerText = '타이머 재개';
+                btn.className = 'flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition cursor-pointer';
+                status.innerText = '일시 정지';
+            } else {
+                helperRunning = true;
+                btn.innerText = '일시 정지';
+                btn.className = 'flex-1 py-3 bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition cursor-pointer';
+                status.innerText = `눈금 ${helperDiceValue} (${helperMaxTime}초) 카운트다운 진행 중...`;
+
+                helperTimerInterval = setInterval(() => {
+                    helperTimeLeft--;
+                    updateHelperDisplay();
+                    if (helperTimeLeft <= 5 && helperTimeLeft > 0) playSound('beep');
+                    if (helperTimeLeft <= 0) {
+                        clearInterval(helperTimerInterval);
+                        helperRunning = false;
+                        playSound('error');
+                        status.innerText = '시간 종료! (MAKE N BREAK)';
+                        btn.innerText = '타이머 시작';
+                        btn.className = 'flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition cursor-pointer';
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetHelperTimer() {
+            playSound('click');
+            clearInterval(helperTimerInterval);
+            helperRunning = false;
+            helperTimeLeft = helperMaxTime;
+            updateHelperDisplay();
+            document.getElementById('helper-status').innerText = `주사위 눈금 ${helperDiceValue} (${helperMaxTime}초 대기 중)`;
+            document.getElementById('btn-helper-toggle').innerText = '타이머 시작';
+        }
+
+        function updateHelperDisplay() {
+            const sec = helperTimeLeft < 10 ? `0${helperTimeLeft}` : helperTimeLeft;
+            document.getElementById('helper-timer-display').innerText = `00:${sec}`;
+        }
+
+        function renderPlayers() {
+            const list = document.getElementById('player-list');
+            if (!list) return;
+            list.innerHTML = '';
+            players.forEach((p, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-700';
+                row.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <input type="text" value="${p.name}" onchange="updatePlayerName(${idx}, this.value)" class="bg-transparent font-bold text-sm text-slate-200 focus:outline-none focus:border-b border-amber-400 w-28">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="changeScore(${idx}, -1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold border border-slate-600 transition flex items-center justify-center cursor-pointer">-</button>
+                        <span class="w-8 text-center font-black text-amber-400 text-lg">${p.score}</span>
+                        <button onclick="changeScore(${idx}, 1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold border border-slate-600 transition flex items-center justify-center cursor-pointer">+</button>
+                        <button onclick="removePlayer(${idx})" class="w-8 h-8 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 font-bold border border-rose-800/50 transition flex items-center justify-center ml-1 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function addPlayer() {
+            playSound('click');
+            players.push({ name: `플레이어 ${players.length + 1}`, score: 0 });
+            renderPlayers();
+        }
+
+        function removePlayer(idx) {
+            playSound('click');
+            if (players.length <= 1) {
+                showToast('최소 1명의 플레이어가 필요합니다.');
+                return;
+            }
+            players.splice(idx, 1);
+            renderPlayers();
+        }
+
+        function changeScore(idx, delta) {
+            playSound('click');
+            players[idx].score = Math.max(0, players[idx].score + delta);
+            renderPlayers();
+        }
+
+        function updatePlayerName(idx, val) {
+            players[idx].name = val || `플레이어 ${idx + 1}`;
+        }
+
+        function resetAllScores() {
+            playSound('click');
+            players.forEach(p => p.score = 0);
+            renderPlayers();
+        }
+
+        // Window Load Initializer
+        window.onload = function() {
+            currentCardIndex = Math.floor(Math.random() * challengeCards.length);
+            renderTargetCard();
+            renderUserCanvas();
+            renderPlayers();
+            updatePracticeTimerDisplay();
+            updateHelperDisplay();
+        };
+    </script>
+</body>
+</html>
